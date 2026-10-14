@@ -62,4 +62,3 @@ export const articles = [
 	)
 ];
 
-export const livres = articles;
