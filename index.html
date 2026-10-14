@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Encre voyageuse</title>
+
+    <!-- CSS de Bootstrap (toujours AVANT notre propre CSS qui le complete) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Notre CSS : placé après, il peut donc modifier Bootstrap (cascade) -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- JS de Bootstrap : fait fonctionner le panneau du panier et la fenêtre de confirmation -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
+
+    <!-- Le navigateur ne charge qu’un seul de Nos fichiers JavaScript : main.js
+     Ensuite, c’est main.js qui va chercher les autres fichiers (Panier.js, Article.js…) avec import -->
+    <script type="module" src="js/main.js"></script>
+</head>
+
+<body>
+
+    <!--EN-TÊTE : contenu FIXE (écrit en dur, il ne change jamais) -->
+    <header class="bg-white py-3">
+        <div class="container-fluid d-flex flex-wrap align-items-center justify-content-between gap-3">
+
+            <div>
+                <h1 class="mb-0">L'Encre voyageuse</h1>
+                <p class="mb-0">La librairie des histoires dont vous êtes le personnage principal</p>
+            </div>
+
+            <!--<nav> signale une zone de navigation. Visuellement, elle ne fait rien
+                elle aide Google et les lecteurs d’écran à comprendre la page
+                C’est le Flexbox de mon résumé CSS, mais écrit avec des classes au lieu de CSS-->
+            <nav class="d-flex align-items-center gap-2" aria-label="Navigation principale">
+                                                     <!--lu à voix haute par les lecteurs d’écran pour les personnes malvoyantes-->
+
+                <!-- Bouton qui ouvre le panneau du panier.
+                instructions pour le JavaScript de Bootstrap :
+                     data-bs-toggle et data-bs-target : c'est Bootstrap qui ouvre le panneau tout seul
+                     "offcanvas" : ouvre ou ferme un panneau latéral 
+                     "#panneau-panier" : « le panneau en question, c’est celui qui a l’id panneau-panier -->
+                <button type="button" class="btn btn-dark"
+                        data-bs-toggle="offcanvas" data-bs-target="#panneau-panier">
+                    Panier
+                    <!-- Le JS mettra à jour ce chiffre à chaque ajout 
+                     id="compteur-panier" est le point de rendez-vous avec JavaScript-->
+                    <span id="compteur-panier" class="badge bg-warning text-dark">0</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Zone des messages ("Livre ajouté au panier", "Commande validée"...).
+         Vide : le JS y affichera les messages. aria-live = lu par les lecteurs d'écran -->
+    <div id="zone-message" class="container-fluid mt-2" aria-live="polite"></div>
+
+
+    <!--VUE BOUTIQUE : catégories à gauche, livres à droite
+    id="vue-boutique" : c’est l’élément que le JS cache quand on est en mode admin grâce au code de main.js -->
+    <div id="vue-boutique" class="container-fluid">
+        <div class="row">
+
+            <!-- Colonne de gauche : les catégories (3 colonnes sur 12 sur ordinateur, toute la largeur sur mobile)
+             <aside> est une balise pour un contenu à côté du contenu principal -->
+            <aside class="col-md-3 bg-white py-4">
+                <!--Cette classe Bootstrap lui donne l’apparence d’un <h4>, plus petit, sans changer son niveau dans la hiérarchie-->
+                <h2 class="h4">Catégories</h2>
+                <!-- VIDE : le JS créera un bouton par catégorie, plus "Tous les livres" -->
+                <nav id="liste-categories" class="list-group" aria-label="Catégories"></nav>
+                                           <!--composant Bootstrap qui affiche des éléments en liste verticale avec des bordures-->
+            </aside>
+
+            <!-- Colonne de droite : les livres (9 colonnes sur 12)
+             <main> est la balise du contenu principal de la page -->
+            <main class="col-md-9 bg-white py-4">
+                <!-- Le JS changera ce titre : "Tous les livres", "Fantasy"... -->
+                <h2 id="titre-liste" class="h4 mb-4">Tous les livres</h2>
+
+                <!-- VIDE : le JS créera une carte par livre.
+                 Ses classes construisent une deuxième grille, à l’intérieur de la première
+                     row-cols-* : 1 carte par ligne sur mobile, 2 sur tablette, 3 sur ordinateur -->
+                <div id="liste-articles" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4"></div>
+
+                <!--
+                    Exemple de carte que le JS fabriquera pour CHAQUE livre
+                    (ne pas décommenter : c'est seulement pour comprendre) : 
+
+                    <div class="col">
+                        <article class="card carte-livre h-100 shadow-sm">
+                            <img src="img/livre.jpg" class="couverture mx-auto mt-3" alt="Couverture de : Titre du livre">
+                            <div class="card-body d-flex flex-column">
+                                <h3 class="card-title h6 fw-bold mb-1">Titre du livre</h3>
+                                <p class="mb-1">Auteur</p>
+                                <p class="small text-muted mb-2">Paru le 12/03/2024</p>
+                                <p class="card-text small">Description...</p>
+                                <p class="prix fs-4 fw-bold mt-auto mb-3">18,50 €</p>
+                                <button class="btn btn-dark w-100" data-id="3">Ajouter au panier</button>
+                            </div>
+                        </article>
+                    </div>
+                    -->
+            </main>
+        </div>
+    </div>
+
+
+    <!-- PANNEAU DU PANIER (Offcanvas Bootstrap) : caché par défaut,
+     grâce au script bootstrap.bundle.min.js chargé dans le <head>
+         Le bouton et le panneau sont donc reliés par l’id. Résultat : un clic sur « Panier » fait glisser le panneau depuis la droite"
+         -->
+    <aside id="panneau-panier" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="titre-panier">
+                                                               <!--permet à Bootstrap de placer le focus du clavier dans le panneau quand il s’ouvre-->
+        <div class="offcanvas-header">
+            <h2 id="titre-panier" class="offcanvas-title h4">Votre panier</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer le panier"></button>
+        </div>
+             <!--Les éléments se placent les uns sous les autres-->
+        <div class="offcanvas-body d-flex flex-column">
+            <!-- <ul> est une liste
+                VIDE : le JS créera une ligne <li>par LignePanier (livre, - quantité +, supprimer, sous-total)
+                 ou le message "Votre panier est vide"
+                 affichage en liste avec bordures -->
+            <ul id="contenu-panier" class="list-group mb-3"></ul>
+
+            <div class="mt-auto">
+            <!--mt-auto Le total et les boutons restent collés en bas, qu’il y ait 1 ou 10 livres dans le panier 
+            les deux éléments écartés au maximum. « Total » à gauche, le montant à droite-->
+                <p class="d-flex justify-content-between fs-5">
+                    <span>Total</span>
+                    <!-- le JS y écrira le vrai total à chaque changement du panier-->
+                    <strong id="total-panier">0,00 €</strong>
+                </p>
+                <div class="d-grid gap-2">
+                    <!-- Les deux boutons sont désactivés (disabled) tant que le panier est vide, un attribut sans valeur :
+                    Le JS retirera disabled dès qu’un livre sera ajouté. C’est la précondition de votre diagramme de cas d’utilisation, appliquée dans le HTML -->
+                    <button type="button" id="btn-commander" class="btn btn-dark" disabled>Passer commande</button>
+                    <button type="button" id="btn-vider-panier" class="btn btn-outline-danger" disabled>Vider le panier</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+
+    <!-- c'est la fenetre de confirmation (Modal Bootstrap) : cachée par défaut,
+         s'ouvre par-dessus la page quand on clique sur "Passer commande"
+         quatre <div> emboîtés c est la structure imposée par Bootstrap -->
+    <div id="modal-confirmation" class="modal fade" tabindex="-1" aria-labelledby="titre-confirmation" aria-hidden="true">
+                                              <!--la fenêtre apparaît et disparaît en fondu, au lieu de surgir d’un coup-->
+        <div class="modal-dialog modal-dialog-centered">
+        <!--centrée verticalement sur l’écran-->
+            <div class="modal-content">
+            <!--La fenêtre blanche, avec ses bords arrondis. Elle contient les trois parties suivantes-->
+                <div class="modal-header">
+                    <h2 id="titre-confirmation" class="modal-title h5">Confirmer votre commande ?</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Vérifiez votre commande. Après validation, votre panier sera vidé.</p>
+                    <!-- Le JS y écrira le récapitulatif : chaque livre, sa quantité, son prix, et le total. Le client vérifie avant de valider. -->
+                    <div id="recap-commande"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" id="btn-confirmer" class="btn btn-dark">Confirmer la commande</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- espace administrateur : cachée par défaut
+    contient surtout des formulaires et un tableau
+    Le JS l'affiche, et cache la boutique, quand l'adresse se termine par #admin
+    -->
+    <section id="vue-admin" class="container py-4" hidden>
+             <!--l’élément que le code de main.js montre ou cache selon le #admin
+             container a une largeur maximale et se centre-->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Gérer le catalogue</h2>
+            <a href="#" class="btn btn-outline-dark">Retour à la boutique</a>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Gestion des catégories -->
+            <div class="col-lg-4">
+                <h3 class="h5">Catégories</h3>
+                <form id="form-categorie" class="mb-3">
+                    <!--Le lien entre <label> et <input> :
+                        l’<input> a un id="nom-categorie" ;
+                        le <label> a un for="nom-categorie", la même valeur
+                        le lecteur d’écran annonce « Nouvelle catégorie, zone de texte »-->
+                    <label for="nom-categorie" class="form-label">Nouvelle catégorie</label>
+                    <div class="input-group">
+                                <!--Bootstrap colle le champ et le bouton ensemble-->
+                        <input type="text" id="nom-categorie" class="form-control" required>
+                        <!--Le navigateur refuse d’envoyer le formulaire si le champ est vide-->
+                        <button type="submit" class="btn btn-dark">Ajouter</button>
+                                <!--envoie le formulaire-->
+                    </div>
+                </form>
+                <!-- liste des catégories
+                VIDE : le JS listera les catégories avec un bouton "Supprimer"
+                     (désactivé si la catégorie contient encore des livres) -->
+                <ul id="admin-liste-categories" class="list-group"></ul>
+            </div>
+
+            <!-- Gestion des livres -->
+            <div class="col-lg-8">
+                <h3 class="h5">Livres</h3>
+                <!--formulaire des livres, lui meme une grille-->
+                <form id="form-article" class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="titre-article" class="form-label">Titre</label>
+                        <input type="text" id="titre-article" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="auteur-article" class="form-label">Auteur</label>
+                        <input type="text" id="auteur-article" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="prix-article" class="form-label">Prix (€)</label>
+                        <input type="number" id="prix-article" class="form-control" min="0" step="0.01" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="date-article" class="form-label">Date de parution</label>
+                        <input type="date" id="date-article" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="categorie-article" class="form-label">Catégorie</label>
+                        <!-- VIDE : le JS remplira la liste déroulante avec les catégories existantes -->
+                        <select id="categorie-article" class="form-select" required></select>
+                    </div>
+                    <div class="col-12">
+                        <label for="image-article" class="form-label">Image (chemin du fichier)</label>
+                        <input type="text" id="image-article" class="form-control" placeholder="img/mon-livre.jpg">
+                    </div>
+                    <div class="col-12">
+                        <label for="description-article" class="form-label">Description</label>
+                        <textarea id="description-article" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-dark">Enregistrer le livre</button>
+                    </div>
+                </form>
+
+                <!--Le tableau des livres-->
+                <div class="table-responsive">
+                <!--Cette boîte autour lui permet de défiler horizontalement, au lieu de déborder de la page-->
+                    <table class="table align-middle">
+                        <thead>
+                        <!--<thead> : la ligne des titres de colonnes, qui ne change pas ;-->
+                            <tr>
+                                <!--dit au lecteur d’écran « ce titre concerne toute la colonne en dessous-->
+                                <th scope="col">Titre</th>
+                                <th scope="col">Catégorie</th>
+                                <th scope="col">Prix</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <!--vide : le JS créera une ligne <tr> par livre avec "Modifier" et "Supprimer" -->
+                        <tbody id="admin-liste-articles"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
