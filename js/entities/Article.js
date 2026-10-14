@@ -3,7 +3,7 @@ import Categorie from "./Categorie.js";
 export default class Article {
 	constructor(picture, title, author, datePublishing, description, resume, editor, price, category) {
 		if (!(category instanceof Categorie)) {
-			throw new TypeError("category must be an instance of Categorie");
+			throw new TypeError("Catégorie non existante");
 		}
 
 		this.picture = picture;
