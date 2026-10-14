@@ -21,7 +21,7 @@ export default class Article {
 
 export const articles = [
 	new Article(
-		"images/livre-prince.jpg",
+		"img/livre-prince.jpg",
 		"Le Petit Prince",
 		"Antoine de Saint-Exupéry",
 		"1943",
@@ -31,7 +31,7 @@ export const articles = [
 		categories.roman
 	),
 	new Article(
-		"images/livre-1984.jpg",
+		"img/livre-1984.jpg",
 		"1984",
 		"George Orwell",
 		"1949",
@@ -41,7 +41,7 @@ export const articles = [
 		categories.scienceFiction
 	),
 	new Article(
-		"images/livre-clean-code.jpg",
+		"img/livre-clean-code.jpg",
 		"Clean Code",
 		"Robert C. Martin",
 		"2008",
@@ -51,7 +51,7 @@ export const articles = [
 		categories.developpement
 	),
 	new Article(
-		"images/livre-meditation.jpg",
+		"img/livre-meditation.jpg",
 		"Les méditations",
 		"Marc Aurèle",
 		"-180",
@@ -62,4 +62,3 @@ export const articles = [
 	)
 ];
 
-export const livres = articles;
