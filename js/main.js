@@ -18,4 +18,4 @@ panier2.ajouter(dune);
 panier2.ajouter(petitPrince);
 console.log(panier2.getTotal());
 
-
+console.log(panier2.getNombreArticles());

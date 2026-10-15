@@ -47,13 +47,25 @@ export default class Panier {
 
 
     getTotal() {
-    let total = 0;                       // avant la boucle on part de zéro
+        let total = 0;                       // avant la boucle on part de zéro
 
-    for (const ligne of this.lignes) {   // pour chaque ligne de (of) la liste this.lignes, fais ce qu’il y a dans les accolades
-        total += ligne.getSousTotal();   //    ajoute au total le sous total de la ligne du tour de boucle en cours en utilisant la méthode de Panier getSousTotal
-    }                                  
+        for (const ligne of this.lignes) {   // pour chaque ligne de (of) la liste this.lignes, fais ce qu’il y a dans les accolades
+            total += ligne.getSousTotal();   //    ajoute au total le sous total de la ligne du tour de boucle en cours en utilisant la méthode de Panier getSousTotal
+        }
 
-    return total;                        // après la boucle on renvoie le résultat
-}
+        return total;                        // après la boucle on renvoie le résultat
+    }
+
+    getNombreArticles() {
+        let nombreArticles = 0;               
+
+        for (const ligne of this.lignes) {        // pour chaque ligne du panier...
+            nombreArticles += ligne.quantite;     // La quantité est un attribut : on le lit directement, sans parenthèses, ligne.quantite car c'est pas une méthode
+                                                  //parle d une seule ligne mais est répétée plusieurs fois grace a la boucle
+        console.log("après cette ligne, nombreArticles vaut", nombreArticles);
+        }
+
+        return nombreArticles;                  
+    }
 
 }
