@@ -1,10 +1,21 @@
-const fauxLivre = { titre: "Dune", prix: 12.5 };
+import Panier from "./entities/Panier.js";
+import LignePanier from "./entities/LignePanier.js";
 
-const ligne = new LignePanier(fauxLivre);
-console.log(ligne.quantite);         // 1
-ligne.augmenter();
-ligne.augmenter();
-console.log(ligne.quantite);         // 3
-console.log(ligne.getSousTotal());   // 37.5
-ligne.diminuer();
-console.log(ligne.getSousTotal());   // 25
+const dune = { id: 3, titre: "Dune", prix: 12.5 };
+const petitPrince = { id: 7, titre: "Le Petit Prince", prix: 8.9 };
+
+const panier = new Panier(1);
+panier.ajouter(dune);
+panier.ajouter(dune);
+panier.ajouter(petitPrince);
+
+panier.retirer(dune);
+panier.retirer(petitPrince);
+
+const panier2 = new Panier(2);
+panier2.ajouter(dune);
+panier2.ajouter(dune);
+panier2.ajouter(petitPrince);
+console.log(panier2.getTotal());
+
+console.log(panier2.getNombreArticles());
