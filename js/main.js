@@ -11,6 +11,11 @@ panier.ajouter(petitPrince);
 
 panier.retirer(dune);
 panier.retirer(petitPrince);
-console.log(panier.lignes);
 
-console.log(panier.lignes);
+const panier2 = new Panier(2);
+panier2.ajouter(dune);
+panier2.ajouter(dune);
+panier2.ajouter(petitPrince);
+console.log(panier2.getTotal());
+
+

@@ -45,4 +45,15 @@ export default class Panier {
         this.lignes = this.lignes.filter(l => l !== ligne);
     }
 
+
+    getTotal() {
+    let total = 0;                       // avant la boucle on part de zéro
+
+    for (const ligne of this.lignes) {   // pour chaque ligne de (of) la liste this.lignes, fais ce qu’il y a dans les accolades
+        total += ligne.getSousTotal();   //    ajoute au total le sous total de la ligne du tour de boucle en cours en utilisant la méthode de Panier getSousTotal
+    }                                  
+
+    return total;                        // après la boucle on renvoie le résultat
+}
+
 }
